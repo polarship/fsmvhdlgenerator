@@ -1,0 +1,65 @@
+{% macro pad(text, spaces) -%}
+{{ '%%-%ss' % (spaces) % (text) }}
+{%- endmacro %}
+{% set __iwidth = fsm.inputs|map('string') |map('length')|max %}
+{% set __owidth = fsm.outputs|map('string')|map('length')|max %}
+{% set __cwidth = ['clk', 'clk_enable']    |map('length')|max %}
+{% set __iowidth = [__iwidth or 0, __owidth or 0, __cwidth]|max %}
+library IEEE;
+  use IEEE.STD_LOGIC_1164.ALL;
+
+entity {{ fsm_name }} is
+  port (
+    {{ pad('clk',        __iowidth) }} : in    STD_LOGIC;
+    {{ pad('clk_enable', __iowidth) }} : in    STD_LOGIC{{ ";" if fsm.inputs or fsm.outputs }}
+    {% for input in fsm.inputs|sort %}
+    {{ pad(input,        __iowidth) }} : in    STD_LOGIC{{ ";" if not loop.last or fsm.outputs }}
+    {% endfor %}
+    {% for output in fsm.outputs|sort %}
+    {{ pad(output,       __iowidth) }} : out   STD_LOGIC{{ ";" if not loop.last }}
+    {% endfor %}
+  );
+end entity {{ fsm_name }};
+
+architecture behavioral of {{ fsm_name }} is
+  type state_type is ({{ fsm.states|sort(attribute="name")|map(attribute='name')|join(', ') }});
+  signal state, next_state : state_type{% if fsm.default_state %} := {{fsm.default_state.name}}{% endif %};
+begin
+
+  clk_process : process (clk) is
+  begin
+    if (rising_edge(clk)) then
+      if (clk_enable='1') then
+        state <= next_state;
+      end if;
+    end if;
+
+  end process clk_process;
+
+  state_process : process (state{% if fsm.inputs %}, {{ fsm.inputs|sort|join(', ') }}{% endif %}) is
+  begin
+    case state is
+
+      {% for state in fsm.states|sort(attribute="name") %}
+      when {{ state.name }} =>
+        {% for output_name, output_value in state.outputs.items() %}
+        {% set __stateowidth = state.outputs.keys()|map('string')|map('length')|max %}
+        {{ pad(output_name, __stateowidth) }} <= '{{ output_value }}';
+        {% endfor %}
+
+        {% for transition in fsm.transitions.from_states(source=state)|sort(attribute="destination.name") %}
+        {% if transition.condition %}
+        {{ "if " if loop.first else "elsif " }}({{ transition.condition.vhdl }}) then
+          next_state <= {{ transition.destination.name }};
+        {% else %}
+        next_state <= {{ transition.destination.name }};
+        {% endif %}
+        {% endfor %}
+        end if;
+        
+      {% endfor %}
+    end case;
+
+  end process state_process;
+
+end architecture behavioral;

@@ -1,0 +1,82 @@
+{% macro pad(text, spaces) -%}
+{{ '%%-%ss' % (spaces) % (text) }}
+{%- endmacro %}
+{% set __iwidth = fsm.inputs|map('string') |map('length')|max %}
+{% set __owidth = fsm.outputs|map('string')|map('length')|max %}
+{% set __cwidth = ['clk', 'clk_enable']    |map('length')|max %}
+{% set __iowidth = [__iwidth or 0, __owidth or 0, __cwidth]|max %}
+library IEEE;
+  use IEEE.STD_LOGIC_1164.ALL;
+
+entity testbed_{{ fsm_name }} is
+end entity testbed_{{ fsm_name }};
+
+architecture behavior of testbed_{{ fsm_name }} is
+
+  component {{ fsm_name }} is
+    port (
+      {{ pad('clk',        __iowidth) }} : in    STD_LOGIC;
+      {{ pad('clk_enable', __iowidth) }} : in    STD_LOGIC{{ ";" if fsm.inputs or fsm.outputs }}
+      {% for input in fsm.inputs|sort %}
+      {{ pad(input,        __iowidth) }} : in    STD_LOGIC{{ ";" if not loop.last or fsm.outputs }}
+      {% endfor %}
+      {% for output in fsm.outputs|sort %}
+      {{ pad(output,       __iowidth) }} : out   STD_LOGIC{{ ";" if not loop.last }}
+      {% endfor %}
+    );
+  end component;
+
+  -- Clock signals
+  signal {{ pad('clk'       , __cwidth) }} : std_logic := '0';
+  signal {{ pad('clk_enable', __cwidth) }} : std_logic := '1';
+
+  -- Input signals
+  {% for input in fsm.inputs|sort %}
+  signal {{pad(input, __iwidth)}} : std_logic := '0';
+  {% endfor %}
+
+  -- Output signals
+  {% for output in fsm.outputs|sort %}
+  signal {{pad(output, __owidth)}} : std_logic := '0';
+  {% endfor %}
+
+  constant clk_period : time := 31.25 ns;
+begin
+
+  uut : {{ fsm_name }}
+    port map (
+      {{ pad('clk',        __iowidth) }} => clk,
+      {{ pad('clk_enable', __iowidth) }} => clk_enable,
+      {% for input in fsm.inputs|sort %}
+      {{ pad(input,        __iowidth) }} => {{input}}{{ "," if not loop.last or fsm.outputs }}
+      {% endfor %}
+      {% for output in fsm.outputs|sort %}
+      {{ pad(output,       __iowidth) }} => {{output}}{{ "," if not loop.last}}
+      {% endfor %}
+    );
+
+  clk_process: process is
+  begin
+
+    clk <= '0';
+    wait for clk_period / 2;
+    clk <= '1';
+    wait for clk_period / 2;
+
+  end process clk_process;
+
+  stimulus_process : process is
+  begin
+
+    wait for 200 ns;
+
+    -- Your tests here
+    {% for input in fsm.inputs|sort %}
+    -- {{ pad(input, __iwidth) }} <= '1';
+    {% endfor %}
+
+    wait;
+
+  end process stimulus_process;
+
+end architecture behavior;

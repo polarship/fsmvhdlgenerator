@@ -1,0 +1,2 @@
+docs/logo-readme.png filter=lfs diff=lfs merge=lfs -text
+docs/icon.png filter=lfs diff=lfs merge=lfs -text

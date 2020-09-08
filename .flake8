@@ -1,0 +1,27 @@
+[flake8]
+exclude =
+    .git
+    env
+    build
+    dist
+    .flake8
+    FSM Designer'
+    .git
+    .gitignore
+    .ignorewords.txt
+    LICENSE
+    .mypy_cache
+    .mypy.ini
+    __pycache__
+    .pylintrc
+    .pytest_cache
+    pytest.ini
+    README.md
+    static
+    .eggs
+max-complexity = 10
+per-file-ignores =
+    # Ignore appending of sys.path for local tests
+    tests/*:E402
+    # Ignore monostate pattern
+    fsmvhdlgenerator/fsmvhdlgenerator.py:F841
