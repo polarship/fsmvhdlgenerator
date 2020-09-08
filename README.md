@@ -1,4 +1,4 @@
-[[ https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/logo-readme.png | width = 1440px ]]
+<img src="https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/logo-readme.png" width="1440">
 
 # FSM VHDL Generator
 
@@ -6,9 +6,11 @@ FSM VHDL Generator is a simple graphical tool written in Python3 to quickly gene
 
 As shown below drawing finite state machines is simple and fast, allowing you to quickly generate VHDL code for use in simulation and synthesis applications such as those by Xilinx and Altera.
 
-[[ https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo1.gif | width = 1440px ]]
-[[ https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo2.gif | width = 1440px ]]
-[[ https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo3.gif | width = 1440px ]]
+<img src="https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo1.gif" width="1200">
+
+<img src="https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo2.gif" width="1200">
+
+<img src="https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo3.gif" width="1200">
 
 The application currently supports Moore finite state machines and simple binary outputs. In addition to the finite state machine itself, FSM VHDL Generator can generate a VHDL testbench of your finite state machine.
 
