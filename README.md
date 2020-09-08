@@ -2,9 +2,9 @@
 
 # FSM VHDL Generator
 
-FSM VHDL Generator is a simple graphical tool written in Python3 to quickly generate VHDL code finite state machines.
+FSM VHDL Generator is a simple graphical tool written in Python3 to quickly generate VHDL code for finite state machines.
 
-As shown below drawing finite state machines is simple and fast, allowing you to quickly generate VHDL code for use in simulation and synthesis applications such as those by Xilinx and Altera.
+As shown below, drawing finite state machines is simple and fast, allowing you to quickly generate VHDL code for use in simulation and synthesis applications such as those by Xilinx and Altera.
 
 <img src="https://github.com/polarship/fsmvhdlgenerator/raw/master/docs/demos/demo1.gif" width="1200">
 
